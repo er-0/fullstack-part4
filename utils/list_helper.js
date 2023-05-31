@@ -24,7 +24,6 @@ const mostBlogs = (blogs) => {
     return {author: blogs[0].author, blogs: 1}
   }
   const prolific = _(blogs).countBy('author').entries().maxBy(_.last)
-  console.log(prolific, "HALOO!")
   return {author: prolific[0], blogs: prolific[1]}
 }
 
