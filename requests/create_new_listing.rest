@@ -1,8 +1,11 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmFhIiwiaWQiOiI2NDc4OTYzYTViNGEyYTdmNWVlZDcxMGMiLCJpYXQiOjE2ODU2MjQ0NTR9.jC1WaclpBsYPgWipVrdsE1lzeBL7hPPRD33oU8EOJi8
+
 
 {
-    "author": "Michael Chan",
-    "title": "uusi",
-    "url": "https://reactpatterns.com/"
+    "author": "Michael Channes",
+    "title": "annan lisäämä",
+    "url": "https://reactpatterns2.com/",
+    "userId": "6478963a5b4a2a7f5eed710c"
 }
