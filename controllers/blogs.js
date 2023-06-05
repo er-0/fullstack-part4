@@ -47,17 +47,19 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 })
 
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
-  //console.log(request.user) userExtractor
+  const user = request.user //userExtractor
   const blog = await Blog.findById(request.params.id)
   if (!blog) {
     return response.status(400).json({ error: 'blog not found' })
+  }
+  if (!user || blog.user.toString() !== user.id.toString()) {
+    return response.status(401).json({ error: 'permission denied' })
   }
   await Blog.findByIdAndRemove(request.params.id)
   response.status(204).end()
 })
 
-blogsRouter.put('/:id', userExtractor, async (request, response) => {
-  // console.log(request.user) userExtractor
+blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
 
   const blog = {

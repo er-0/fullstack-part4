@@ -137,11 +137,25 @@ describe('adding a note', () => {
   })
 })
 
-describe('deletion of a note', () => {
-  test('succeeds with status code 204 if id is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+describe('deletion of a blog', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    const testBlog = {
+      title: 'test blog', // which will contain the user data
+      author: 'someone',
+      url: 'example.com'
+    }
+    await api
+      .post('/api/blogs')
+      .set("Authorization", `Bearer ${token}`)
+      .send(testBlog)
+      .expect(201)
+    return token
+  })
 
+  test('succeeds with status code 204 if user added the blog', async () => {
+    const blogsAtStart = await Blog.find({}).populate("user")
+    const blogToDelete = blogsAtStart[0]
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
       .set({ Authorization: `Bearer ${token}` })
@@ -150,7 +164,7 @@ describe('deletion of a note', () => {
     const blogsAfter = await helper.blogsInDb()
 
     expect(blogsAfter).toHaveLength(
-      helper.initialBlogs.length - 1
+      blogsAtStart.length - 1
     )
 
     const contents = blogsAfter.map(r => r.title)
@@ -163,16 +177,17 @@ describe('deletion of a note', () => {
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({ Authorization: `Bearer väärätoken` })
       .expect(401)
 
     const blogsAfter = await helper.blogsInDb()
 
-    expect(blogsAfter).toHaveLength(helper.initialBlogs.length)
+    expect(blogsAfter).toHaveLength(blogsAtStart.length)
   })
 })
 
-describe('editing a note', () => {
-  test('works when authorized user adds a like', async () => {
+describe('editing a blog', () => {
+  test('works when user adds a like', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToEdit = blogsAtStart[0]
     const editedBlog = {
@@ -183,23 +198,9 @@ describe('editing a note', () => {
     const resultBlog = await api
       .put(`/api/blogs/${blogToEdit.id}`)
       .send(editedBlog)
-      .set({ Authorization: `Bearer ${token}` })
       .expect(200)
 
     expect(resultBlog.body).toEqual(editedBlog)
-  })
-  test('fails with status code 401 if user is unauthorized', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToEdit = blogsAtStart[0]
-    const editedBlog = {
-      ...blogToEdit,
-      likes: blogToEdit.likes + 1
-    }
-
-    await api
-      .put(`/api/blogs/${blogToEdit.id}`)
-      .send(editedBlog)
-      .expect(401)
   })
 })
 
