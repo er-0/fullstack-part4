@@ -1,18 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-/*const User = require('../models/user')
-const jwt = require('jsonwebtoken')*/
 const { userExtractor } = require('../utils/middleware')
-
-/* alkup.versio vertailun vuoksi
-blogsRouter.get('/', (request, response) => {
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
-})
-*/
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -36,7 +24,8 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
     url: body.url,
     likes: body.likes,
     id: body.id,
-    user: user._id
+    user: user._id,
+    commments: body.comments
   })
 
   const savedBlog = await blog.save()
@@ -74,5 +63,13 @@ blogsRouter.put('/:id', async (request, response) => {
   response.status(200).json(blog)
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { comment } = request.body
+  const blog = await Blog.findById(request.params.id)
+  blog.comments = blog.comments.concat(comment)
+
+  const savedBlog = await blog.save()
+  response.status(201).json(savedBlog)
+})
 
 module.exports = blogsRouter

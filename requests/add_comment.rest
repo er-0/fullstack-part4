@@ -1,0 +1,8 @@
+POST http://localhost:3001/api/blogs/647ddcc1615c1458524e0cbc/comments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2tvIiwiaWQiOiI2NDdjODc4MTUyNmYyYWE0OTI1ODY2ZDkiLCJpYXQiOjE2ODU4ODI3Nzl9.coQR8L4VxZqhBUP-vzhfbuDQ-EUzyazkuBAdJ6gXYVM
+
+
+{
+  "comment": "good blog2"
+}
